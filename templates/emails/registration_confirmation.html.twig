@@ -1,0 +1,26 @@
+<h1>Bonjour {{ user.firstName }} !</h1>
+
+<p>
+Merci de vous être inscrit sur notre boutique.
+Pour valider votre compte, veuillez cliquer sur le lien ci-dessous :
+</p>
+
+<p>
+{# Le lien généré précédemment dans le composant #}
+<a href="{{ signedUrl }}">Confirmer mon adresse email</a>
+</p>
+
+<p>
+Ce lien expirera dans
+{#
+CORRECTION :
+'expiresAtMessageKey' est la clé (string)
+'expiresAtMessageData' est le tableau de paramètres (array)
+'VerifyEmailBundle' est le domaine de traduction
+#}
+{{ expiresAtMessageKey|trans(expiresAtMessageData, 'VerifyEmailBundle') }}.
+</p>
+
+<p>
+À bientôt !
+</p>

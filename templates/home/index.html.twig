@@ -1,0 +1,132 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil - Webshop Premium{% endblock %}
+
+{% block body %}
+<div class="bg-white font-sans">
+    {# 1. Header & Navigation (Remplace le Hero) #}
+    <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div class="flex h-20 items-center justify-between">
+                {# Logo #}
+                <div class="flex items-center gap-2 group cursor-pointer">
+                    <div class="bg-indigo-600 p-2 rounded-xl text-white shadow-lg shadow-indigo-200 group-hover:scale-110 transition-transform">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                    </div>
+                    <span class="text-2xl font-black tracking-tighter text-gray-900 italic uppercase">Webshop</span>
+                </div>
+
+                {# Navigation Droite #}
+                <div class="flex items-center gap-6">
+                    {# Panier (toujours visible) #}
+                    <a href="#" class="relative p-2 text-gray-500 hover:text-indigo-600 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                        <span class="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white ring-2 ring-white">0</span>
+                    </a>
+
+                    <div class="h-6 w-px bg-gray-200"></div>
+
+                    {# Zone Authentification #}
+                    {% if app.user %}
+                        {# Utilisateur Connecté #}
+                        <div class="flex items-center gap-4">
+                            <div class="hidden md:flex flex-col items-end">
+                                <span class="text-xs font-black text-gray-900 leading-none">{{ app.user.firstName }}</span>
+                                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none mt-1">{{ app.user.role }}</span>
+                            </div>
+                            <div class="relative group">
+                                <button class="flex h-10 w-10 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 font-black border-2 border-indigo-100 hover:bg-indigo-600 hover:text-white transition-all">
+                                    {{ app.user.firstName|first|upper }}
+                                </button>
+                                {# Badge de statut #}
+                                <span class="absolute -bottom-0.5 -right-0.5 block h-3.5 w-3.5 rounded-full bg-green-500 border-2 border-white"></span>
+                            </div>
+                        </div>
+                    {% else %}
+                        {# Mode Déconnecté #}
+                        <div class="flex items-center gap-3">
+                            <a href="{{ path('app_login') }}" class="text-sm font-black text-gray-600 hover:text-indigo-600 px-3 py-2 transition-colors">
+                                Connexion
+                            </a>
+                            <a href="{{ path('app_register') }}" class="rounded-xl bg-gray-900 px-5 py-2.5 text-sm font-black text-white shadow-xl shadow-gray-200 hover:bg-indigo-600 transition-all active:scale-95">
+                                Inscription
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </header>
+
+    {# 2. Catégories Quick-Links #}
+    <section class="py-12 bg-gray-50 border-b border-gray-100">
+        <div class="mx-auto max-w-7xl px-6 lg:px-8">
+            <div class="flex flex-wrap justify-center gap-8 md:gap-16">
+                {% for category in categories %}
+                    <a href="#" class="group flex flex-col items-center gap-3">
+                        <div class="w-16 h-16 rounded-3xl bg-white shadow-sm flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white group-hover:shadow-xl group-hover:shadow-indigo-100 transition-all duration-300 border border-gray-100">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                        </div>
+                        <span class="text-[10px] font-black text-gray-400 group-hover:text-gray-900 transition-colors uppercase tracking-widest">{{ category.name }}</span>
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    {# 3. Featured Products avec Symfony UX Live Component #}
+    <section id="shop" class="py-20">
+        <div class="mx-auto max-w-7xl px-6 lg:px-8">
+            <div class="flex items-end justify-between mb-12">
+                <div>
+                    <span class="text-indigo-600 font-black text-xs uppercase tracking-[0.3em] mb-3 block">Boutique</span>
+                    <h2 class="text-4xl font-black text-gray-900 tracking-tighter">Nos meilleures pépites</h2>
+                </div>
+                <div class="hidden md:block">
+                    <a href="#" class="text-sm font-black text-gray-400 hover:text-indigo-600 flex items-center gap-2 transition-colors">
+                        Tout voir <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            {# On appelle le composant Live #}
+            {{ component('FeaturedProducts') }}
+        </div>
+    </section>
+
+    {# 4. Réassurance #}
+    <section class="bg-indigo-600 py-16">
+        <div class="mx-auto max-w-7xl px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 text-center md:text-left">
+                <div class="flex flex-col items-center md:items-start gap-4">
+                    <div class="p-3 bg-white/10 rounded-2xl text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-black text-lg">Livraison Gratuite</h4>
+                        <p class="text-indigo-100 text-sm">Sur toutes les commandes dès 49€.</p>
+                    </div>
+                </div>
+                <div class="flex flex-col items-center md:items-start gap-4">
+                    <div class="p-3 bg-white/10 rounded-2xl text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-black text-lg">Qualité Certifiée</h4>
+                        <p class="text-indigo-100 text-sm">Tous nos produits sont testés en interne.</p>
+                    </div>
+                </div>
+                <div class="flex flex-col items-center md:items-start gap-4">
+                    <div class="p-3 bg-white/10 rounded-2xl text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01"/></svg>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-black text-lg">Support 24/7</h4>
+                        <p class="text-indigo-100 text-sm">Une question ? Notre équipe vous répond.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

@@ -620,7 +620,7 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
  *         }>,
  *     },
  *     rate_limiter?: bool|array{ // Rate limiter configuration
- *         enabled?: bool, // Default: false
+ *         enabled?: bool, // Default: true
  *         limiters?: array<string, array{ // Default: []
  *             lock_factory?: scalar|null, // The service ID of the lock factory used by this limiter (or null to disable locking). // Default: "auto"
  *             cache_pool?: scalar|null, // The cache pool to use for storing the current limiter state. // Default: "cache.rate_limiter"
@@ -1453,6 +1453,84 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
  *     generate_final_classes?: bool, // Default: true
  *     generate_final_entities?: bool, // Default: false
  * }
+ * @psalm-type TwigComponentConfig = array{
+ *     defaults?: array<string, string|array{ // Default: ["__deprecated__use_old_naming_behavior"]
+ *         template_directory?: scalar|null, // Default: "components"
+ *         name_prefix?: scalar|null, // Default: ""
+ *     }>,
+ *     anonymous_template_directory?: scalar|null, // Defaults to `components`
+ *     profiler?: bool, // Enables the profiler for Twig Component (in debug mode) // Default: "%kernel.debug%"
+ *     controllers_json?: scalar|null, // Deprecated: The "twig_component.controllers_json" config option is deprecated, and will be removed in 3.0. // Default: null
+ * }
+ * @psalm-type LiveComponentConfig = array{
+ *     secret?: scalar|null, // The secret used to compute fingerprints and checksums // Default: "%kernel.secret%"
+ * }
+ * @psalm-type SymfonycastsTailwindConfig = array{
+ *     input_css?: list<scalar|null>,
+ *     config_file?: scalar|null, // Path to the tailwind.config.js file // Default: "%kernel.project_dir%/tailwind.config.js"
+ *     binary?: scalar|null, // The tailwind binary to use instead of downloading a new one // Default: null
+ *     binary_version?: scalar|null, // Tailwind CLI version to download - null means the latest version // Default: null
+ *     binary_platform?: "auto"|"linux-arm64"|"linux-arm64-musl"|"linux-x64"|"linux-x64-musl"|"macos-arm64"|"macos-x64"|"windows-x64", // Tailwind CLI platform to download - "auto" will try to detect the platform automatically // Default: "auto"
+ *     postcss_config_file?: scalar|null, // Path to PostCSS config file which is passed to the Tailwind CLI // Default: null
+ *     strict_mode?: bool|null, // When enabled, an exception will be thrown if there are no built assets (default: false in `test` env, true otherwise) // Default: null
+ * }
+ * @psalm-type StofDoctrineExtensionsConfig = array{
+ *     orm?: array<string, array{ // Default: []
+ *         translatable?: scalar|null, // Default: false
+ *         timestampable?: scalar|null, // Default: false
+ *         blameable?: scalar|null, // Default: false
+ *         sluggable?: scalar|null, // Default: false
+ *         tree?: scalar|null, // Default: false
+ *         loggable?: scalar|null, // Default: false
+ *         ip_traceable?: scalar|null, // Default: false
+ *         sortable?: scalar|null, // Default: false
+ *         softdeleteable?: scalar|null, // Default: false
+ *         uploadable?: scalar|null, // Default: false
+ *         reference_integrity?: scalar|null, // Default: false
+ *     }>,
+ *     mongodb?: array<string, array{ // Default: []
+ *         translatable?: scalar|null, // Default: false
+ *         timestampable?: scalar|null, // Default: false
+ *         blameable?: scalar|null, // Default: false
+ *         sluggable?: scalar|null, // Default: false
+ *         tree?: scalar|null, // Default: false
+ *         loggable?: scalar|null, // Default: false
+ *         ip_traceable?: scalar|null, // Default: false
+ *         sortable?: scalar|null, // Default: false
+ *         softdeleteable?: scalar|null, // Default: false
+ *         uploadable?: scalar|null, // Default: false
+ *         reference_integrity?: scalar|null, // Default: false
+ *     }>,
+ *     class?: array{
+ *         translatable?: scalar|null, // Default: "Gedmo\\Translatable\\TranslatableListener"
+ *         timestampable?: scalar|null, // Default: "Gedmo\\Timestampable\\TimestampableListener"
+ *         blameable?: scalar|null, // Default: "Gedmo\\Blameable\\BlameableListener"
+ *         sluggable?: scalar|null, // Default: "Gedmo\\Sluggable\\SluggableListener"
+ *         tree?: scalar|null, // Default: "Gedmo\\Tree\\TreeListener"
+ *         loggable?: scalar|null, // Default: "Gedmo\\Loggable\\LoggableListener"
+ *         sortable?: scalar|null, // Default: "Gedmo\\Sortable\\SortableListener"
+ *         softdeleteable?: scalar|null, // Default: "Gedmo\\SoftDeleteable\\SoftDeleteableListener"
+ *         uploadable?: scalar|null, // Default: "Gedmo\\Uploadable\\UploadableListener"
+ *         reference_integrity?: scalar|null, // Default: "Gedmo\\ReferenceIntegrity\\ReferenceIntegrityListener"
+ *     },
+ *     softdeleteable?: array{
+ *         handle_post_flush_event?: bool, // Default: false
+ *     },
+ *     uploadable?: array{
+ *         default_file_path?: scalar|null, // Default: null
+ *         mime_type_guesser_class?: scalar|null, // Default: "Stof\\DoctrineExtensionsBundle\\Uploadable\\MimeTypeGuesserAdapter"
+ *         default_file_info_class?: scalar|null, // Default: "Stof\\DoctrineExtensionsBundle\\Uploadable\\UploadedFileInfo"
+ *         validate_writable_directory?: bool, // Default: true
+ *     },
+ *     default_locale?: scalar|null, // Default: "en"
+ *     translation_fallback?: bool, // Default: false
+ *     persist_default_translation?: bool, // Default: false
+ *     skip_translation_on_load?: bool, // Default: false
+ *     metadata_cache_pool?: scalar|null, // Default: null
+ * }
+ * @psalm-type SymfonycastsVerifyEmailConfig = array{
+ *     lifetime?: int, // The length of time in seconds that a signed URI is valid for after it is created. // Default: 3600
+ * }
  * @psalm-type ConfigType = array{
  *     imports?: ImportsConfig,
  *     parameters?: ParametersConfig,
@@ -1466,6 +1544,11 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
  *     twig_extra?: TwigExtraConfig,
  *     security?: SecurityConfig,
  *     monolog?: MonologConfig,
+ *     twig_component?: TwigComponentConfig,
+ *     live_component?: LiveComponentConfig,
+ *     symfonycasts_tailwind?: SymfonycastsTailwindConfig,
+ *     stof_doctrine_extensions?: StofDoctrineExtensionsConfig,
+ *     symfonycasts_verify_email?: SymfonycastsVerifyEmailConfig,
  *     "when@dev"?: array{
  *         imports?: ImportsConfig,
  *         parameters?: ParametersConfig,
@@ -1482,6 +1565,11 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
  *         security?: SecurityConfig,
  *         monolog?: MonologConfig,
  *         maker?: MakerConfig,
+ *         twig_component?: TwigComponentConfig,
+ *         live_component?: LiveComponentConfig,
+ *         symfonycasts_tailwind?: SymfonycastsTailwindConfig,
+ *         stof_doctrine_extensions?: StofDoctrineExtensionsConfig,
+ *         symfonycasts_verify_email?: SymfonycastsVerifyEmailConfig,
  *     },
  *     "when@prod"?: array{
  *         imports?: ImportsConfig,
@@ -1496,6 +1584,11 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
  *         twig_extra?: TwigExtraConfig,
  *         security?: SecurityConfig,
  *         monolog?: MonologConfig,
+ *         twig_component?: TwigComponentConfig,
+ *         live_component?: LiveComponentConfig,
+ *         symfonycasts_tailwind?: SymfonycastsTailwindConfig,
+ *         stof_doctrine_extensions?: StofDoctrineExtensionsConfig,
+ *         symfonycasts_verify_email?: SymfonycastsVerifyEmailConfig,
  *     },
  *     "when@test"?: array{
  *         imports?: ImportsConfig,
@@ -1511,6 +1604,11 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
  *         twig_extra?: TwigExtraConfig,
  *         security?: SecurityConfig,
  *         monolog?: MonologConfig,
+ *         twig_component?: TwigComponentConfig,
+ *         live_component?: LiveComponentConfig,
+ *         symfonycasts_tailwind?: SymfonycastsTailwindConfig,
+ *         stof_doctrine_extensions?: StofDoctrineExtensionsConfig,
+ *         symfonycasts_verify_email?: SymfonycastsVerifyEmailConfig,
  *     },
  *     ...<string, ExtensionType|array{ // extra keys must follow the when@%env% pattern or match an extension alias
  *         imports?: ImportsConfig,

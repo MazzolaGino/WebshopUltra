@@ -1,9 +1,57 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <title>{% block title %}Webshop{% endblock %}</title>
+        
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>🛒</text></svg>">
+        
+        {# Intégration de Tailwind CSS via CDN #}
+        <script src="https://cdn.tailwindcss.com"></script>
+        
+        {# Configuration optionnelle de Tailwind (couleurs, polices personnalisées) #}
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            brand: '#4f46e5', // Indigo-600
+                        },
+                        borderRadius: {
+                            'xl': '1rem',
+                            '2xl': '1.5rem',
+                            '3xl': '2rem',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        </script>
+
+        <style type="text/tailwindcss">
+            @layer base {
+                body {
+                    @apply bg-gray-50 text-gray-900 antialiased;
+                }
+                .fade-in {
+                    animation: fadeIn 0.4s ease-out;
+                }
+                @keyframes fadeIn {
+                    from { opacity: 0; transform: translateY(10px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+            }
+        </style>
+
+        {# Google Fonts: Inter #}
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+
         {% block stylesheets %}
         {% endblock %}
 
@@ -11,7 +59,8 @@
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
     </head>
-    <body>
+    <body class="min-h-screen">
+        {# On peut imaginer un wrapper global ici ou laisser le bloc body libre #}
         {% block body %}{% endblock %}
     </body>
 </html>

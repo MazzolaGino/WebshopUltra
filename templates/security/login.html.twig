@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Connexion - Webshop{% endblock %}
+
+{% block body %}
+<div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 font-sans">
+    <div class="max-w-md w-full space-y-8 bg-white p-10 rounded-[2.5rem] shadow-2xl border border-white">
+        
+        <div class="text-center">
+            <div class="inline-flex items-center justify-center w-20 h-20 bg-indigo-600 text-white rounded-[1.5rem] mb-6 shadow-xl">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            </div>
+            <h2 class="text-4xl font-black text-gray-900 tracking-tight">Bon retour !</h2>
+            <p class="mt-2 text-gray-500 font-medium">Connectez-vous à votre espace client</p>
+        </div>
+
+        <form method="post" class="mt-8 space-y-6">
+            {% if error %}
+                <div class="p-4 bg-red-50 text-red-600 rounded-2xl text-sm font-bold border border-red-100 animate-pulse">
+                    {{ error.messageKey|trans(error.messageData, 'security') }}
+                </div>
+            {% endif %}
+
+            <div class="space-y-4">
+                <div>
+                    <label for="inputEmail" class="block text-xs font-black text-gray-400 uppercase tracking-widest ml-1 mb-2">Email</label>
+                    <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="w-full px-5 py-4 bg-gray-50 border-2 border-transparent focus:border-indigo-600 focus:bg-white rounded-2xl outline-none transition-all font-medium" autocomplete="email" required autofocus>
+                </div>
+                
+                <div>
+                    <label for="inputPassword" class="block text-xs font-black text-gray-400 uppercase tracking-widest ml-1 mb-2">Mot de passe</label>
+                    <input type="password" name="password" id="inputPassword" class="w-full px-5 py-4 bg-gray-50 border-2 border-transparent focus:border-indigo-600 focus:bg-white rounded-2xl outline-none transition-all font-medium" autocomplete="current-password" required>
+                </div>
+            </div>
+
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <input id="remember_me" name="_remember_me" type="checkbox" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                    <label for="remember_me" class="ml-2 block text-sm text-gray-500">Se souvenir de moi</label>
+                </div>
+                <div class="text-sm">
+                    <a href="#" class="font-bold text-indigo-600 hover:text-indigo-500">Oublié ?</a>
+                </div>
+            </div>
+
+            <button type="submit" class="w-full flex justify-center py-5 px-4 border border-transparent text-lg font-black rounded-2xl text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 shadow-xl transition-all active:scale-[0.98]">
+                Se connecter
+            </button>
+        </form>
+
+        <p class="text-center text-sm text-gray-500">
+            Nouveau sur Webshop ? 
+            <a href="/register" class="font-black text-indigo-600 hover:underline">Créer un compte</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

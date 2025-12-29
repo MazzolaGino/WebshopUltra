@@ -1,0 +1,7 @@
+stof_doctrine_extensions:
+    default_locale: fr
+    translation_fallback: true
+    orm:
+        default:
+            translatable: true
+            # Ne pas ajouter de 'class' ici si vous avez créé src/Entity/Translation.php

@@ -1,0 +1,99 @@
+<div {{ attributes }} class="w-full max-w-2xl bg-white p-8 sm:p-12 rounded-[2.5rem] shadow-2xl border border-white fade-in font-sans">
+    
+    <div class="text-center mb-10">
+        <div class="inline-flex items-center justify-center w-20 h-20 bg-indigo-600 text-white rounded-[1.5rem] mb-6 shadow-xl">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
+        </div>
+        <h2 class="text-4xl font-black text-gray-900 tracking-tight">Rejoignez-nous</h2>
+        <p class="mt-2 text-gray-500 font-medium">Créez votre compte en quelques secondes</p>
+    </div>
+
+    <form data-action="live#action:prevent" data-live-action-param="save" class="space-y-6">
+        
+        {# Messages d'erreur Flash globaux #}
+        {% for message in app.flashes('error') %}
+            <div class="p-4 bg-red-50 text-red-600 rounded-2xl text-sm font-bold border border-red-100 animate-pulse">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-2">
+                <label class="block text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Prénom</label>
+                <input type="text" data-model="firstName" class="w-full px-5 py-4 bg-gray-50 border-2 border-transparent focus:border-indigo-600 focus:bg-white rounded-2xl outline-none transition-all font-medium {{ _errors.has('firstName') ? 'border-red-500' }}" placeholder="Jean">
+                {% if _errors.has('firstName') %}
+                    <p class="text-red-500 text-[10px] font-bold mt-1 uppercase ml-1">{{ _errors.get('firstName') }}</p>
+                {% endif %}
+            </div>
+            <div class="space-y-2">
+                <label class="block text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Nom</label>
+                <input type="text" data-model="lastName" class="w-full px-5 py-4 bg-gray-50 border-2 border-transparent focus:border-indigo-600 focus:bg-white rounded-2xl outline-none transition-all font-medium" placeholder="Dupont">
+            </div>
+        </div>
+
+        <div class="space-y-2">
+            <label class="block text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Email</label>
+            <input type="email" data-model="debounce(300)|email" class="w-full px-5 py-4 bg-gray-50 border-2 border-transparent focus:border-indigo-600 focus:bg-white rounded-2xl outline-none transition-all font-medium {{ _errors.has('email') ? 'border-red-500' }}" placeholder="votre@email.com">
+            {% if _errors.has('email') %}
+                <p class="text-red-500 text-[10px] font-bold mt-1 uppercase ml-1">{{ _errors.get('email') }}</p>
+            {% endif %}
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-2">
+                <label class="block text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Mot de passe</label>
+                <input type="password" data-model="password" class="w-full px-5 py-4 bg-gray-50 border-2 border-transparent focus:border-indigo-600 focus:bg-white rounded-2xl outline-none transition-all font-medium {{ _errors.has('password') ? 'border-red-500' }}" placeholder="••••••••">
+                {% if _errors.has('password') %}
+                    <p class="text-red-500 text-[10px] font-bold mt-1 uppercase ml-1">{{ _errors.get('password') }}</p>
+                {% endif %}
+            </div>
+            <div class="space-y-2">
+                <label class="block text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Confirmation</label>
+                <input type="password" data-model="passwordConfirm" class="w-full px-5 py-4 bg-gray-50 border-2 border-transparent focus:border-indigo-600 focus:bg-white rounded-2xl outline-none transition-all font-medium" placeholder="••••••••">
+            </div>
+        </div>
+
+        <div class="pt-6 border-t border-gray-100 space-y-4">
+            <div class="space-y-2">
+                <label class="block text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Adresse de livraison</label>
+                <input type="text" data-model="address" class="w-full px-5 py-4 bg-gray-50 border-2 border-transparent focus:border-indigo-600 focus:bg-white rounded-2xl outline-none transition-all font-medium {{ _errors.has('address') ? 'border-red-500' }}" placeholder="123 rue de la Paix">
+                {% if _errors.has('address') %}
+                    <p class="text-red-500 text-[10px] font-bold mt-1 uppercase ml-1">{{ _errors.get('address') }}</p>
+                {% endif %}
+            </div>
+            <div class="grid grid-cols-2 gap-6">
+                <div class="space-y-2">
+                    <input type="text" data-model="zipCode" class="w-full px-5 py-4 bg-gray-50 border-2 border-transparent focus:border-indigo-600 focus:bg-white rounded-2xl outline-none transition-all font-medium {{ _errors.has('zipCode') ? 'border-red-500' }}" placeholder="Code postal">
+                    {% if _errors.has('zipCode') %}
+                        <p class="text-red-500 text-[10px] font-bold mt-1 uppercase ml-1">{{ _errors.get('zipCode') }}</p>
+                    {% endif %}
+                </div>
+                <div class="space-y-2">
+                    <input type="text" data-model="city" class="w-full px-5 py-4 bg-gray-50 border-2 border-transparent focus:border-indigo-600 focus:bg-white rounded-2xl outline-none transition-all font-medium {{ _errors.has('city') ? 'border-red-500' }}" placeholder="Ville">
+                    {% if _errors.has('city') %}
+                        <p class="text-red-500 text-[10px] font-bold mt-1 uppercase ml-1">{{ _errors.get('city') }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-3 py-2">
+            <input type="checkbox" data-model="isAgreed" id="isAgreed" class="h-5 w-5 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded-lg transition-all cursor-pointer">
+            <label for="isAgreed" class="text-sm text-gray-500 font-medium cursor-pointer selection:bg-none">
+                J'accepte les <a href="#" class="text-indigo-600 font-black hover:underline underline-offset-4">Conditions Générales</a>
+            </label>
+        </div>
+
+        <button type="submit" class="w-full flex justify-center py-5 px-4 border border-transparent text-lg font-black rounded-2xl text-white bg-indigo-600 hover:bg-indigo-700 shadow-2xl shadow-indigo-200 transition-all active:scale-[0.98] disabled:opacity-50">
+            <span class="inline-flex items-center gap-2">
+                <span data-loading class="animate-spin inline-block w-5 h-5 border-2 border-white border-t-transparent rounded-full mr-2"></span>
+                Créer mon compte
+            </span>
+        </button>
+
+        <p class="text-center text-sm text-gray-500 font-medium">
+            Déjà client ? 
+            <a href="{{ path('app_login') }}" class="font-black text-indigo-600 hover:underline underline-offset-4">Se connecter</a>
+        </p>
+    </form>
+</div>

@@ -19,6 +19,8 @@ use Symfony\UX\LiveComponent\Attribute\LiveProp;
 use Symfony\UX\LiveComponent\DefaultActionTrait;
 use Symfony\UX\LiveComponent\ValidatableComponentTrait;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
+use Symfony\UX\TwigComponent\Attribute\ExposeInTemplate;
+use App\Repository\CountryRepository;
 
 #[AsLiveComponent]
 class RegistrationForm extends AbstractController
@@ -68,23 +70,39 @@ class RegistrationForm extends AbstractController
     #[Assert\NotBlank(message: 'Le code postal est obligatoire.')]
     public string $zipCode = '';
 
+    // On change le type en int? pour stocker l'ID du pays sélectionné
     #[LiveProp(writable: true)]
     #[Assert\NotBlank(message: 'Le pays est obligatoire.')]
-    public string $country = 'France';
+    public ?int $country = null;
 
     #[LiveProp(writable: true)]
     #[Assert\IsTrue(message: 'Vous devez accepter les conditions.')]
     public bool $isAgreed = false;
 
+    public function __construct(
+        private CountryRepository $countryRepository
+    ) {
+        $this->countryRepository = $countryRepository;
+    }
+
+
+    #[ExposeInTemplate]
+    public function getCountries(): array
+    {
+        return $this->countryRepository->findBy([], ['name' => 'ASC']);
+    }
+
+
     #[LiveAction]
     public function save(
-        EntityManagerInterface $em, 
+        EntityManagerInterface $em,
         UserRepository $userRepository,
         UserPasswordHasherInterface $hasher,
         MailerInterface $mailer,
         string $mailerFrom,
         LoggerInterface $logger,
         VerifyEmailHelperInterface $verifyEmailHelper
+
     ) {
         // 1. Validation automatique
         $this->validate();
@@ -150,7 +168,6 @@ class RegistrationForm extends AbstractController
 
             // 6. Redirection vers l'étape "Vérifiez vos emails"
             return $this->redirectToRoute('app_registration_check_email');
-
         } catch (\Exception $e) {
             $logger->error('Erreur inscription : ' . $e->getMessage());
             $this->addFlash('error', 'Une erreur technique est survenue.');

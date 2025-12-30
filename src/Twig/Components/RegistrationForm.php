@@ -4,6 +4,7 @@ namespace App\Twig\Components;
 
 use App\Entity\User;
 use App\Entity\UserAddress;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
@@ -63,19 +64,30 @@ class RegistrationForm extends AbstractController
     #[LiveAction]
     public function save(
         EntityManagerInterface $em, 
+        UserRepository $userRepository, // Injection du repository
         UserPasswordHasherInterface $hasher,
         MailerInterface $mailer,
         string $mailerFrom,
         LoggerInterface $logger,
-        VerifyEmailHelperInterface $verifyEmailHelper // Service pour générer l'URL signée
+        VerifyEmailHelperInterface $verifyEmailHelper
     ) {
+        // 1. Validation des contraintes Assert
         $this->validate();
 
+        // 2. Vérification manuelle de la duplication d'email
+        $existingUser = $userRepository->findOneBy(['email' => $this->email]);
+        if ($existingUser) {
+            $this->addFlash('error', 'Cet email est déjà associé à un compte existant.');
+            return;
+        }
+
+        // 3. Vérification de la correspondance des mots de passe
         if ($this->password !== $this->passwordConfirm) {
             $this->addFlash('error', 'Les mots de passe ne correspondent pas.');
             return;
         }
 
+        // 4. Vérification RGPD
         if (!$this->isAgreed) {
             $this->addFlash('error', 'Vous devez accepter les conditions d\'utilisation.');
             return;
@@ -88,7 +100,7 @@ class RegistrationForm extends AbstractController
             $user->setLastName($this->lastName);
             $user->setPassword($hasher->hashPassword($user, $this->password));
             $user->setRole('customer');
-            $user->setIsVerified(false); // Par défaut non vérifié
+            $user->setIsVerified(false);
 
             $userAddress = new UserAddress();
             $userAddress->setUser($user);
@@ -104,7 +116,7 @@ class RegistrationForm extends AbstractController
 
             // Génération de la signature pour l'email de vérification
             $signatureComponents = $verifyEmailHelper->generateSignature(
-                'app_verify_email', // Assurez-vous que cette route existe dans votre RegistrationController
+                'app_verify_email',
                 (string) $user->getId(),
                 $user->getEmail(),
                 ['id' => $user->getId()]
@@ -117,7 +129,7 @@ class RegistrationForm extends AbstractController
                 ->htmlTemplate('emails/registration_confirmation.html.twig')
                 ->context([
                     'user' => $user,
-                    'signedUrl' => $signatureComponents->getSignedUrl(), // On passe enfin la variable manquante
+                    'signedUrl' => $signatureComponents->getSignedUrl(),
                     'expiresAtMessageKey' => $signatureComponents->getExpirationMessageKey(),
                     'expiresAtMessageData' => $signatureComponents->getExpirationMessageData(),
                 ]);
@@ -129,7 +141,7 @@ class RegistrationForm extends AbstractController
 
         } catch (\Exception $e) {
             $logger->error('Erreur inscription : ' . $e->getMessage());
-            $this->addFlash('error', 'Une erreur est survenue lors de la création du compte.');
+            $this->addFlash('error', 'Une erreur technique est survenue. Veuillez réessayer plus tard.');
         }
     }
 }

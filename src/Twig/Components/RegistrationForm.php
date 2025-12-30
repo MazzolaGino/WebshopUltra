@@ -26,10 +26,23 @@ class RegistrationForm extends AbstractController
     use DefaultActionTrait;
     use ValidatableComponentTrait;
 
+    // --- Propriétés Utilisateur ---
+    #[LiveProp(writable: true)]
+    #[Assert\NotBlank(message: 'Le prénom est obligatoire.')]
+    public string $firstName = '';
+
+    #[LiveProp(writable: true)]
+    #[Assert\NotBlank(message: 'Le nom est obligatoire.')]
+    public string $lastName = '';
+
     #[LiveProp(writable: true)]
     #[Assert\NotBlank(message: 'L\'email est obligatoire.')]
     #[Assert\Email(message: 'Format d\'email invalide.')]
     public string $email = '';
+
+    #[LiveProp(writable: true)]
+    #[Assert\NotBlank(message: 'Le numéro de téléphone est obligatoire.')]
+    public string $phoneNumber = '';
 
     #[LiveProp(writable: true)]
     #[Assert\NotBlank(message: 'Le mot de passe est obligatoire.')]
@@ -39,16 +52,13 @@ class RegistrationForm extends AbstractController
     #[LiveProp(writable: true)]
     public string $passwordConfirm = '';
 
-    #[LiveProp(writable: true)]
-    #[Assert\NotBlank(message: 'Le prénom est obligatoire.')]
-    public string $firstName = '';
-
-    #[LiveProp(writable: true)]
-    public string $lastName = '';
-
+    // --- Propriétés Adresse ---
     #[LiveProp(writable: true)]
     #[Assert\NotBlank(message: 'L\'adresse est obligatoire.')]
-    public string $address = '';
+    public string $addressLine1 = '';
+
+    #[LiveProp(writable: true)]
+    public string $addressLine2 = '';
 
     #[LiveProp(writable: true)]
     #[Assert\NotBlank(message: 'La ville est obligatoire.')]
@@ -59,62 +69,64 @@ class RegistrationForm extends AbstractController
     public string $zipCode = '';
 
     #[LiveProp(writable: true)]
+    #[Assert\NotBlank(message: 'Le pays est obligatoire.')]
+    public string $country = 'France';
+
+    #[LiveProp(writable: true)]
+    #[Assert\IsTrue(message: 'Vous devez accepter les conditions.')]
     public bool $isAgreed = false;
 
     #[LiveAction]
     public function save(
         EntityManagerInterface $em, 
-        UserRepository $userRepository, // Injection du repository
+        UserRepository $userRepository,
         UserPasswordHasherInterface $hasher,
         MailerInterface $mailer,
         string $mailerFrom,
         LoggerInterface $logger,
         VerifyEmailHelperInterface $verifyEmailHelper
     ) {
-        // 1. Validation des contraintes Assert
+        // 1. Validation automatique
         $this->validate();
 
-        // 2. Vérification manuelle de la duplication d'email
-        $existingUser = $userRepository->findOneBy(['email' => $this->email]);
-        if ($existingUser) {
-            $this->addFlash('error', 'Cet email est déjà associé à un compte existant.');
+        // 2. Validation manuelle
+        if ($userRepository->findOneBy(['email' => $this->email])) {
+            $this->addFlash('error', 'Cet email est déjà utilisé.');
             return;
         }
 
-        // 3. Vérification de la correspondance des mots de passe
         if ($this->password !== $this->passwordConfirm) {
             $this->addFlash('error', 'Les mots de passe ne correspondent pas.');
             return;
         }
 
-        // 4. Vérification RGPD
-        if (!$this->isAgreed) {
-            $this->addFlash('error', 'Vous devez accepter les conditions d\'utilisation.');
-            return;
-        }
-
         try {
+            // 3. Création de l'utilisateur
             $user = new User();
             $user->setEmail($this->email);
             $user->setFirstName($this->firstName);
             $user->setLastName($this->lastName);
+            $user->setPhone($this->phoneNumber);
             $user->setPassword($hasher->hashPassword($user, $this->password));
             $user->setRole('customer');
             $user->setIsVerified(false);
 
-            $userAddress = new UserAddress();
-            $userAddress->setUser($user);
-            $userAddress->setAddressLine1($this->address);
-            $userAddress->setCity($this->city);
-            $userAddress->setZipCode($this->zipCode);
-            $userAddress->setIsDefault(true);
-            $userAddress->setType('both');
+            // 4. Création de l'adresse
+            $address = new UserAddress();
+            $address->setUser($user);
+            $address->setAddressLine1($this->addressLine1);
+            $address->setAddressLine2($this->addressLine2);
+            $address->setCity($this->city);
+            $address->setZipCode($this->zipCode);
+            $address->setCountry($this->country);
+            $address->setIsDefault(true);
+            $address->setType('both');
 
             $em->persist($user);
-            $em->persist($userAddress);
+            $em->persist($address);
             $em->flush();
 
-            // Génération de la signature pour l'email de vérification
+            // 5. Email de vérification
             $signatureComponents = $verifyEmailHelper->generateSignature(
                 'app_verify_email',
                 (string) $user->getId(),
@@ -125,7 +137,7 @@ class RegistrationForm extends AbstractController
             $emailMessage = (new TemplatedEmail())
                 ->from(new Address($mailerFrom, 'Votre Boutique'))
                 ->to($user->getEmail())
-                ->subject('Bienvenue ! Veuillez confirmer votre email')
+                ->subject('Confirmation de votre compte')
                 ->htmlTemplate('emails/registration_confirmation.html.twig')
                 ->context([
                     'user' => $user,
@@ -136,12 +148,12 @@ class RegistrationForm extends AbstractController
 
             $mailer->send($emailMessage);
 
-            $this->addFlash('success', 'Compte créé ! Un email de confirmation vous a été envoyé.');
-            return $this->redirectToRoute('app_login');
+            // 6. Redirection vers l'étape "Vérifiez vos emails"
+            return $this->redirectToRoute('app_registration_check_email');
 
         } catch (\Exception $e) {
             $logger->error('Erreur inscription : ' . $e->getMessage());
-            $this->addFlash('error', 'Une erreur technique est survenue. Veuillez réessayer plus tard.');
+            $this->addFlash('error', 'Une erreur technique est survenue.');
         }
     }
 }

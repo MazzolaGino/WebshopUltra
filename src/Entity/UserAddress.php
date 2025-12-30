@@ -41,6 +41,10 @@ class UserAddress
     #[Assert\NotBlank(message: "L'adresse est obligatoire.")]
     private ?string $addressLine1 = null;
 
+    #[ORM\Column(name: 'address_line2', type: Types::TEXT)]
+    #[Assert\NotBlank(message: "L'adresse est obligatoire.")]
+    private ?string $addressLine2 = null;
+
     #[ORM\Column(name: 'zip_code', length: 20)]
     #[Assert\NotBlank(message: "Le code postal est obligatoire.")]
     private ?string $zipCode = null;
@@ -49,10 +53,10 @@ class UserAddress
     #[Assert\NotBlank(message: "La ville est obligatoire.")]
     private ?string $city = null;
 
-    #[ORM\Column(name: 'country_code', length: 3, options: ['default' => 'FRA'])]
+    #[ORM\Column(name: 'country', length: 45)]
     #[Assert\NotBlank]
-    #[Assert\Country]
-    private ?string $countryCode = 'FRA';
+    #[Assert\Country(message: "Le pays est obligatoire.")]
+    private ?string $country;
 
     #[ORM\Column(length: 20, nullable: true)]
     private ?string $phone = null;
@@ -77,41 +81,133 @@ class UserAddress
 
     // --- Getters & Setters ---
 
-    public function getId(): ?int { return $this->id; }
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
-    public function getUser(): ?User { return $this->user; }
-    public function setUser(?User $user): self { $this->user = $user; return $this; }
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
+        return $this;
+    }
 
-    public function getType(): ?string { return $this->type; }
-    public function setType(?string $type): self { $this->type = $type; return $this; }
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+    public function setType(?string $type): self
+    {
+        $this->type = $type;
+        return $this;
+    }
 
-    public function getFirstName(): ?string { return $this->firstName; }
-    public function setFirstName(?string $firstName): self { $this->firstName = $firstName; return $this; }
+    public function getFirstName(): ?string
+    {
+        return $this->firstName;
+    }
+    public function setFirstName(?string $firstName): self
+    {
+        $this->firstName = $firstName;
+        return $this;
+    }
 
-    public function getLastName(): ?string { return $this->lastName; }
-    public function setLastName(?string $lastName): self { $this->lastName = $lastName; return $this; }
+    public function getLastName(): ?string
+    {
+        return $this->lastName;
+    }
+    public function setLastName(?string $lastName): self
+    {
+        $this->lastName = $lastName;
+        return $this;
+    }
 
-    public function getAddressLine1(): ?string { return $this->addressLine1; }
-    public function setAddressLine1(string $addressLine1): self { $this->addressLine1 = $addressLine1; return $this; }
+    public function getAddressLine1(): ?string
+    {
+        return $this->addressLine1;
+    }
+    public function setAddressLine1(string $addressLine1): self
+    {
+        $this->addressLine1 = $addressLine1;
+        return $this;
+    }
 
-    public function getZipCode(): ?string { return $this->zipCode; }
-    public function setZipCode(string $zipCode): self { $this->zipCode = $zipCode; return $this; }
+    public function getAddressLine2(): ?string
+    {
+        return $this->addressLine2;
+    }
+    public function setAddressLine2(string $addressLine2): self
+    {
+        $this->addressLine2 = $addressLine2;
+        return $this;
+    }
 
-    public function getCity(): ?string { return $this->city; }
-    public function setCity(string $city): self { $this->city = $city; return $this; }
+    public function getZipCode(): ?string
+    {
+        return $this->zipCode;
+    }
+    public function setZipCode(string $zipCode): self
+    {
+        $this->zipCode = $zipCode;
+        return $this;
+    }
 
-    public function getCountryCode(): ?string { return $this->countryCode; }
-    public function setCountryCode(string $countryCode): self { $this->countryCode = $countryCode; return $this; }
+    public function getCity(): ?string
+    {
+        return $this->city;
+    }
+    public function setCity(string $city): self
+    {
+        $this->city = $city;
+        return $this;
+    }
 
-    public function getPhone(): ?string { return $this->phone; }
-    public function setPhone(?string $phone): self { $this->phone = $phone; return $this; }
+    public function getPhone(): ?string
+    {
+        return $this->phone;
+    }
+    public function setPhone(?string $phone): self
+    {
+        $this->phone = $phone;
+        return $this;
+    }
 
-    public function isDefault(): bool { return $this->isDefault; }
-    public function setIsDefault(bool $isDefault): self { $this->isDefault = $isDefault; return $this; }
+    public function isDefault(): bool
+    {
+        return $this->isDefault;
+    }
+    public function setIsDefault(bool $isDefault): self
+    {
+        $this->isDefault = $isDefault;
+        return $this;
+    }
 
-    public function getCreatedAt(): ?\DateTimeInterface { return $this->createdAt; }
-    public function getUpdatedAt(): ?\DateTimeInterface { return $this->updatedAt; }
-    public function getDeletedAt(): ?\DateTimeInterface { return $this->deletedAt; }
+    public function getCountry(): ?string
+    {
+        return $this->country;
+    }
+    public function setCountry(?string $countryName): self
+    {
+        $this->country = $countryName;
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+    public function getDeletedAt(): ?\DateTimeInterface
+    {
+        return $this->deletedAt;
+    }
 
     public function setCreatedAt(\DateTime $createdAt): static
     {

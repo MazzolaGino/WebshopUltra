@@ -1,218 +1,158 @@
-<div
-    {{ attributes }}
-    class="w-full max-w-2xl bg-white p-8 sm:p-12 rounded-[2.5rem] shadow-2xl border border-white fade-in font-sans"
->
-    <div class="text-center mb-10">
-        <div class="inline-flex items-center justify-center w-20 h-20 bg-indigo-600 text-white rounded-[1.5rem] mb-6 shadow-xl">
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="w-10 h-10"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-            >
-                <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                <circle cx="8.5" cy="7" r="4"></circle>
-                <line x1="20" y1="8" x2="20" y2="14"></line>
-                <line x1="23" y1="11" x2="17" y2="11"></line>
+<div {{ attributes }} class="mx-auto w-full max-w-4xl bg-white p-8 sm:p-14 rounded-[3rem] shadow-2xl border border-gray-100 transition-all font-sans">
+    
+    <!-- Header -->
+    <div class="text-center mb-12">
+        <div class="inline-flex items-center justify-center w-16 h-16 bg-indigo-50 text-indigo-600 rounded-2xl mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
             </svg>
         </div>
-        <h2 class="text-4xl font-black text-gray-900 tracking-tight">Rejoignez-nous</h2>
-        <p class="mt-2 text-gray-500 font-medium">Créez votre compte en quelques secondes</p>
+        <h2 class="text-4xl font-black text-gray-900 tracking-tight">Créer un compte</h2>
+        <p class="mt-2 text-gray-500 font-medium italic">Rejoignez notre communauté de passionnés</p>
     </div>
 
-    {# Bloc de messages Flash pour Live Components #}
-    <div class="space-y-4 mb-8">
-        {% for label, messages in app.flashes %}
-            {% for message in messages %}
-                {% set bgColor = label == 'success' ? 'bg-green-50' : 'bg-red-50' %}
-                {% set textColor = label == 'success' ? 'text-green-800' : 'text-red-800' %}
-                {% set borderColor = label == 'success' ? 'border-green-200' : 'border-red-200' %}
-                {% set iconColor = label == 'success' ? 'text-green-500' : 'text-red-500' %}
-                <div class="flex items-center p-4 rounded-2xl border {{ bgColor }} {{ borderColor }} shadow-sm animate-in fade-in slide-in-from-top-2 duration-300">
-                    <div class="flex-shrink-0 {{ iconColor }}">
-                        {% if label == 'success' %}
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2.5"
-                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                                ></path>
-                            </svg>
-                        {% else %}
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2.5"
-                                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                                ></path>
-                            </svg>
-                        {% endif %}
-                    </div>
-                    <div class="ml-3">
-                        <p class="text-sm font-black uppercase tracking-wide {{ textColor }}">
-                            {{ label == 'success' ? 'Succès' : 'Erreur' }}
-                        </p>
-                        <p class="text-sm font-medium opacity-90 {{ textColor }}">
-                            {{ message }}
-                        </p>
-                    </div>
+    {% include 'components/_alerts.html.twig' %}
+
+    <form data-action="live#action:prevent" data-live-action-param="save" class="space-y-10">
+        
+        <!-- Section 1: Identité -->
+        <div class="space-y-6">
+            <div class="flex items-center gap-4 mb-2">
+                <span class="flex items-center justify-center w-8 h-8 rounded-full bg-indigo-600 text-white text-xs font-bold">1</span>
+                <h3 class="text-lg font-bold text-gray-800 uppercase tracking-wider">Informations Personnelles</h3>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="group">
+                    <label class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2 ml-1 group-focus-within:text-indigo-600 transition-colors">Prénom</label>
+                    <input type="text" 
+                           data-model="on(change)|firstName" 
+                           class="w-full px-6 py-4 bg-gray-50 border-2 {{ _errors.has('firstName') ? 'border-red-500' : 'border-transparent focus:border-indigo-600 focus:bg-white focus:ring-4 focus:ring-indigo-500/10' }} rounded-2xl outline-none transition-all font-medium placeholder-gray-300" placeholder="Jean">
+                    {% if _errors.has('firstName') %}<p class="mt-2 text-xs text-red-500 font-bold px-1 italic">{{ _errors.get('firstName') }}</p>{% endif %}
                 </div>
-            {% endfor %}
-        {% endfor %}
-    </div>
-
-    <form data-action="live#action:prevent" data-live-action-param="save" class="space-y-6">
-        {# Messages d'erreur Flash globaux #}
-        {% for message in app.flashes('error') %}
-            <div class="p-4 bg-red-50 text-red-600 rounded-2xl text-sm font-bold border border-red-100 animate-pulse">
-                {{ message }}
-            </div>
-        {% endfor %}
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="space-y-2">
-                <label class="block text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Prénom</label>
-                <input
-                    type="text"
-                    data-model="firstName"
-                    class="w-full px-5 py-4 bg-gray-50 border-2 border-transparent focus:border-indigo-600 focus:bg-white rounded-2xl outline-none transition-all font-medium {{ _errors.has('firstName') ? 'border-red-500' }}"
-                    placeholder="Jean"
-                >
-                {% if _errors.has('firstName') %}
-                    <p class="text-red-500 text-[10px] font-bold mt-1 uppercase ml-1">
-                        {{ _errors.get('firstName') }}
-                    </p>
-                {% endif %}
-            </div>
-            <div class="space-y-2">
-                <label class="block text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Nom</label>
-                <input
-                    type="text"
-                    data-model="lastName"
-                    class="w-full px-5 py-4 bg-gray-50 border-2 border-transparent focus:border-indigo-600 focus:bg-white rounded-2xl outline-none transition-all font-medium"
-                    placeholder="Dupont"
-                >
-            </div>
-        </div>
-
-        <div class="space-y-2">
-            <label class="block text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Email</label>
-            <input
-                type="email"
-                data-model="debounce(300)|email"
-                class="w-full px-5 py-4 bg-gray-50 border-2 border-transparent focus:border-indigo-600 focus:bg-white rounded-2xl outline-none transition-all font-medium {{ _errors.has('email') ? 'border-red-500' }}"
-                placeholder="votre@email.com"
-            >
-            {% if _errors.has('email') %}
-                <p class="text-red-500 text-[10px] font-bold mt-1 uppercase ml-1">
-                    {{ _errors.get('email') }}
-                </p>
-            {% endif %}
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="space-y-2">
-                <label class="block text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Mot de passe</label>
-                <input
-                    type="password"
-                    data-model="password"
-                    class="w-full px-5 py-4 bg-gray-50 border-2 border-transparent focus:border-indigo-600 focus:bg-white rounded-2xl outline-none transition-all font-medium {{ _errors.has('password') ? 'border-red-500' }}"
-                    placeholder="••••••••"
-                >
-                {% if _errors.has('password') %}
-                    <p class="text-red-500 text-[10px] font-bold mt-1 uppercase ml-1">
-                        {{ _errors.get('password') }}
-                    </p>
-                {% endif %}
-            </div>
-            <div class="space-y-2">
-                <label class="block text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Confirmation</label>
-                <input
-                    type="password"
-                    data-model="passwordConfirm"
-                    class="w-full px-5 py-4 bg-gray-50 border-2 border-transparent focus:border-indigo-600 focus:bg-white rounded-2xl outline-none transition-all font-medium"
-                    placeholder="••••••••"
-                >
-            </div>
-        </div>
-
-        <div class="pt-6 border-t border-gray-100 space-y-4">
-            <div class="space-y-2">
-                <label class="block text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Adresse de livraison</label>
-                <input
-                    type="text"
-                    data-model="address"
-                    class="w-full px-5 py-4 bg-gray-50 border-2 border-transparent focus:border-indigo-600 focus:bg-white rounded-2xl outline-none transition-all font-medium {{ _errors.has('address') ? 'border-red-500' }}"
-                    placeholder="123 rue de la Paix"
-                >
-                {% if _errors.has('address') %}
-                    <p class="text-red-500 text-[10px] font-bold mt-1 uppercase ml-1">
-                        {{ _errors.get('address') }}
-                    </p>
-                {% endif %}
-            </div>
-            <div class="grid grid-cols-2 gap-6">
-                <div class="space-y-2">
-                    <input
-                        type="text"
-                        data-model="zipCode"
-                        class="w-full px-5 py-4 bg-gray-50 border-2 border-transparent focus:border-indigo-600 focus:bg-white rounded-2xl outline-none transition-all font-medium {{ _errors.has('zipCode') ? 'border-red-500' }}"
-                        placeholder="Code postal"
-                    >
-                    {% if _errors.has('zipCode') %}
-                        <p class="text-red-500 text-[10px] font-bold mt-1 uppercase ml-1">
-                            {{ _errors.get('zipCode') }}
-                        </p>
-                    {% endif %}
+                <div class="group">
+                    <label class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2 ml-1 group-focus-within:text-indigo-600 transition-colors">Nom</label>
+                    <input type="text" 
+                           data-model="on(change)|lastName" 
+                           class="w-full px-6 py-4 bg-gray-50 border-2 {{ _errors.has('lastName') ? 'border-red-500' : 'border-transparent focus:border-indigo-600 focus:bg-white focus:ring-4 focus:ring-indigo-500/10' }} rounded-2xl outline-none transition-all font-medium placeholder-gray-300" placeholder="Dupont">
+                    {% if _errors.has('lastName') %}<p class="mt-2 text-xs text-red-500 font-bold px-1 italic">{{ _errors.get('lastName') }}</p>{% endif %}
                 </div>
-                <div class="space-y-2">
-                    <input
-                        type="text"
-                        data-model="city"
-                        class="w-full px-5 py-4 bg-gray-50 border-2 border-transparent focus:border-indigo-600 focus:bg-white rounded-2xl outline-none transition-all font-medium {{ _errors.has('city') ? 'border-red-500' }}"
-                        placeholder="Ville"
-                    >
-                    {% if _errors.has('city') %}
-                        <p class="text-red-500 text-[10px] font-bold mt-1 uppercase ml-1">
-                            {{ _errors.get('city') }}
-                        </p>
-                    {% endif %}
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="group">
+                    <label class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2 ml-1 group-focus-within:text-indigo-600 transition-colors">Email Professionnel</label>
+                    <input type="email" 
+                           data-model="on(change)|email" 
+                           class="w-full px-6 py-4 bg-gray-50 border-2 {{ _errors.has('email') ? 'border-red-500' : 'border-transparent focus:border-indigo-600 focus:bg-white focus:ring-4 focus:ring-indigo-500/10' }} rounded-2xl outline-none transition-all font-medium placeholder-gray-300" placeholder="jean@exemple.fr">
+                    {% if _errors.has('email') %}<p class="mt-2 text-xs text-red-500 font-bold px-1 italic">{{ _errors.get('email') }}</p>{% endif %}
+                </div>
+                <div class="group">
+                    <label class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2 ml-1 group-focus-within:text-indigo-600 transition-colors">Téléphone</label>
+                    <input type="tel" 
+                           data-model="on(change)|phoneNumber" 
+                           class="w-full px-6 py-4 bg-gray-50 border-2 {{ _errors.has('phoneNumber') ? 'border-red-500' : 'border-transparent focus:border-indigo-600 focus:bg-white focus:ring-4 focus:ring-indigo-500/10' }} rounded-2xl outline-none transition-all font-medium placeholder-gray-300" placeholder="06 12 34 56 78">
+                    {% if _errors.has('phoneNumber') %}<p class="mt-2 text-xs text-red-500 font-bold px-1 italic">{{ _errors.get('phoneNumber') }}</p>{% endif %}
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="group">
+                    <label class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2 ml-1 group-focus-within:text-indigo-600 transition-colors">Mot de passe</label>
+                    <input type="password" 
+                           data-model="on(change)|password" 
+                           class="w-full px-6 py-4 bg-gray-50 border-2 {{ _errors.has('password') ? 'border-red-500' : 'border-transparent focus:border-indigo-600 focus:bg-white focus:ring-4 focus:ring-indigo-500/10' }} rounded-2xl outline-none transition-all font-medium" placeholder="••••••••">
+                    {% if _errors.has('password') %}<p class="mt-2 text-xs text-red-500 font-bold px-1 italic">{{ _errors.get('password') }}</p>{% endif %}
+                </div>
+                <div class="group">
+                    <label class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2 ml-1 group-focus-within:text-indigo-600 transition-colors">Confirmation</label>
+                    <input type="password" 
+                           data-model="on(change)|passwordConfirm" 
+                           class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-indigo-600 focus:bg-white rounded-2xl outline-none transition-all font-medium" placeholder="••••••••">
                 </div>
             </div>
         </div>
 
-        <div class="flex items-center gap-3 py-2">
-            <input
-                type="checkbox"
-                data-model="isAgreed"
-                id="isAgreed"
-                class="h-5 w-5 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded-lg transition-all cursor-pointer"
-            >
-            <label for="isAgreed" class="text-sm text-gray-500 font-medium cursor-pointer selection:bg-none">
-                J'accepte les
-                <a href="#" class="text-indigo-600 font-black hover:underline underline-offset-4">Conditions Générales</a>
-            </label>
+        <!-- Section 2: Localisation -->
+        <div class="space-y-6 pt-10 border-t border-gray-100">
+            <div class="flex items-center gap-4 mb-2">
+                <span class="flex items-center justify-center w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 text-xs font-bold">2</span>
+                <h3 class="text-lg font-bold text-gray-800 uppercase tracking-wider">Adresse de Livraison</h3>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-1 gap-6">
+                <div class="group">
+                    <label class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2 ml-1 group-focus-within:text-indigo-600 transition-colors">Rue et Numéro</label>
+                    <input type="text" 
+                           data-model="on(change)|addressLine1" 
+                           class="w-full px-6 py-4 bg-gray-50 border-2 {{ _errors.has('addressLine1') ? 'border-red-500' : 'border-transparent focus:border-indigo-600 focus:bg-white' }} rounded-2xl outline-none transition-all font-medium placeholder-gray-300" placeholder="12 boulevard des Capucines">
+                    {% if _errors.has('addressLine1') %}<p class="mt-2 text-xs text-red-500 font-bold px-1 italic">{{ _errors.get('addressLine1') }}</p>{% endif %}
+                </div>
+            </div>
+
+            <div class="group">
+                <label class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2 ml-1 group-focus-within:text-indigo-600 transition-colors text-gray-400">Complément (Optionnel)</label>
+                <input type="text" 
+                       data-model="on(change)|addressLine2" 
+                       class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-indigo-600 focus:bg-white rounded-2xl outline-none transition-all font-medium placeholder-gray-300" placeholder="Étage, code porte, appartement...">
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="group">
+                    <label class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2 ml-1 group-focus-within:text-indigo-600 transition-colors">Code Postal</label>
+                    <input type="text" 
+                           data-model="on(change)|zipCode" 
+                           class="w-full px-6 py-4 bg-gray-50 border-2 {{ _errors.has('zipCode') ? 'border-red-500' : 'border-transparent focus:border-indigo-600 focus:bg-white' }} rounded-2xl outline-none transition-all font-medium placeholder-gray-300" placeholder="75000">
+                    {% if _errors.has('zipCode') %}<p class="mt-2 text-xs text-red-500 font-bold px-1 italic">{{ _errors.get('zipCode') }}</p>{% endif %}
+                </div>
+                <div class="group md:col-span-2">
+                    <label class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2 ml-1 group-focus-within:text-indigo-600 transition-colors">Ville</label>
+                    <input type="text" 
+                           data-model="on(change)|city" 
+                           class="w-full px-6 py-4 bg-gray-50 border-2 {{ _errors.has('city') ? 'border-red-500' : 'border-transparent focus:border-indigo-600 focus:bg-white' }} rounded-2xl outline-none transition-all font-medium placeholder-gray-300" placeholder="Paris">
+                    {% if _errors.has('city') %}<p class="mt-2 text-xs text-red-500 font-bold px-1 italic">{{ _errors.get('city') }}</p>{% endif %}
+                </div>
+            </div>
+
+            <div class="group">
+                <label class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2 ml-1 group-focus-within:text-indigo-600 transition-colors">Pays</label>
+                <select data-model="country" class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-indigo-600 focus:bg-white rounded-2xl outline-none transition-all font-medium appearance-none cursor-pointer">
+                    <option value="France">France</option>
+                    <option value="Belgique">Belgique</option>
+                    <option value="Suisse">Suisse</option>
+                    <option value="Luxembourg">Luxembourg</option>
+                </select>
+            </div>
         </div>
 
-        <button
-            type="submit"
-            class="w-full flex justify-center py-5 px-4 border border-transparent text-lg font-black rounded-2xl text-white bg-indigo-600 hover:bg-indigo-700 shadow-2xl shadow-indigo-200 transition-all active:scale-[0.98] disabled:opacity-50"
-        >
-            <span class="inline-flex items-center gap-2">
-                <span data-loading class="animate-spin inline-block w-5 h-5 border-2 border-white border-t-transparent rounded-full mr-2"></span>
-                Créer mon compte
-            </span>
-        </button>
+        <!-- Footer actions -->
+        <div class="pt-6 space-y-6">
+            <div class="flex items-start gap-4 p-4 bg-gray-50 rounded-2xl transition-all border-2 border-transparent hover:border-indigo-100">
+                <div class="pt-1">
+                    <input type="checkbox" data-model="isAgreed" id="isAgreed" class="h-6 w-6 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded-lg transition-all cursor-pointer">
+                </div>
+                <label for="isAgreed" class="text-sm text-gray-600 font-medium leading-relaxed cursor-pointer select-none">
+                    J'accepte les <a href="#" class="text-indigo-600 font-bold underline decoration-indigo-200 hover:decoration-indigo-600 underline-offset-4">Conditions Générales</a> et je confirme avoir pris connaissance de la politique de confidentialité.
+                </label>
+            </div>
+            {% if _errors.has('isAgreed') %}<p class="mt-2 text-xs text-red-500 font-bold px-1 italic">{{ _errors.get('isAgreed') }}</p>{% endif %}
 
-        <p class="text-center text-sm text-gray-500 font-medium">
-            Déjà client ?
-            <a href="{{ path('app_login') }}" class="font-black text-indigo-600 hover:underline underline-offset-4">Se connecter</a>
-        </p>
+            <button type="submit" 
+                    data-loading="addAttribute(disabled) addClass(opacity-50 cursor-not-allowed)"
+                    class="group relative w-full overflow-hidden flex justify-center py-5 px-4 border border-transparent text-xl font-black rounded-3xl text-white bg-indigo-600 hover:bg-indigo-700 shadow-xl shadow-indigo-500/20 transform active:scale-[0.98] transition-all">
+                <span data-loading class="absolute left-10 top-1/2 -translate-y-1/2">
+                    <svg class="animate-spin h-6 w-6 text-white" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                </span>
+                <span class="inline-flex items-center gap-2 group-hover:translate-x-1 transition-transform">
+                    Finaliser mon inscription
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </svg>
+                </span>
+            </button>
+        </div>
     </form>
 </div>

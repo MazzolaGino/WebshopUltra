@@ -71,4 +71,10 @@ class RegistrationController extends AbstractController
 
         return $this->redirectToRoute('app_login');
     }
+
+    #[Route('/inscription/confirmation', name: 'app_registration_confirmation')]
+    public function confirmation(): Response
+    {
+        return $this->render('registration/confirmation.html.twig');
+    }
 }

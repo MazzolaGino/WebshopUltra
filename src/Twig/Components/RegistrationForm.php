@@ -52,6 +52,11 @@ class RegistrationForm extends AbstractController
     public string $password = '';
 
     #[LiveProp(writable: true)]
+    #[Assert\NotBlank(message: 'Veuillez confirmer votre mot de passe.')]
+    #[Assert\Expression(
+        "this.password == this.passwordConfirm",
+        message: "Les mots de passe ne correspondent pas."
+    )]
     public string $passwordConfirm = '';
 
     // --- Propriétés Adresse ---
@@ -167,7 +172,7 @@ class RegistrationForm extends AbstractController
             $mailer->send($emailMessage);
 
             // 6. Redirection vers l'étape "Vérifiez vos emails"
-            return $this->redirectToRoute('app_registration_check_email');
+            return $this->redirectToRoute('app_registration_confirmation');
         } catch (\Exception $e) {
             $logger->error('Erreur inscription : ' . $e->getMessage());
             $this->addFlash('error', 'Une erreur technique est survenue.');
